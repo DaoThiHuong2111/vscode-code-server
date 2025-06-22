@@ -23,6 +23,8 @@ services:
       --auth password
       --disable-telemetry
       --extensions-dir /home/coder/.local/share/code-server/extensions
+      --enable-proposed-api GitHub.copilot
+      --enable-proposed-api GitHub.copilot-chat
     networks:
       - code-server-network
 
