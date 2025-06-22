@@ -33,14 +33,8 @@ print_error() {
 check_container() {
     if ! docker ps | grep -q $CONTAINER_NAME; then
         print_error "Container $CONTAINER_NAME is not running."
-        print_status "Starting container..."
-        ./scripts/start.sh
-        sleep 10
-        
-        if ! docker ps | grep -q $CONTAINER_NAME; then
-            print_error "Failed to start container. Please check your setup."
-            exit 1
-        fi
+        print_status "Please start the container first with ./scripts/start.sh"
+        exit 1
     fi
     print_success "Container is running"
 }
