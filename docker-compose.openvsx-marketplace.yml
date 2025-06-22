@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  code-server:
+    image: codercom/code-server:latest
+    container_name: vscode-selfhost
+    restart: unless-stopped
+    ports:
+      - "8008:8080"
+    environment:
+      - PASSWORD=${PASSWORD:-admin123}
+      - SUDO_PASSWORD=${SUDO_PASSWORD:-admin123}
+      - PROXY_DOMAIN=${PROXY_DOMAIN:-localhost}
+      # OpenVSX Marketplace Configuration
+      - >-
+        EXTENSIONS_GALLERY={"serviceUrl": "https://open-vsx.org/vscode/gallery", "itemUrl": "https://open-vsx.org/vscode/item", "controlUrl": "", "recommendationsUrl": ""}
+      - SERVICE_URL=https://open-vsx.org/vscode/gallery
+      - ITEM_URL=https://open-vsx.org/vscode/item
+    volumes:
+      - ./config:/home/coder/.config
+      - ./data:/home/coder/workspace
+      - ./extensions:/home/coder/.local/share/code-server/extensions
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    user: "1000:1000"
+    command: >
+      --bind-addr 0.0.0.0:8080
+      --user-data-dir /home/coder/.config
+      --auth password
+      --disable-telemetry
+      --extensions-dir /home/coder/.local/share/code-server/extensions
+      --enable-proposed-api GitHub.copilot
+      --enable-proposed-api GitHub.copilot-chat
+    networks:
+      - code-server-network
+
+networks:
+  code-server-network:
+    driver: bridge
+
+volumes:
+  config:
+  data:
+  extensions:
