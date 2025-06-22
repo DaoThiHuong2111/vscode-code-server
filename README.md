@@ -9,11 +9,33 @@ Dự án này giúp bạn self-host VSCode trên Ubuntu bằng Docker và code-s
 - Hỗ trợ Microsoft marketplace để cài đặt extension
 - Có thể cài đặt các extension như GitHub Copilot
 
+## ⚡ Quick Start
+
+```bash
+# 1. Clone và setup
+git clone <repository-url>
+cd vscode-selfhost-code-server
+cp .env.example .env
+
+# 2. Chỉnh sửa password trong .env
+nano .env
+
+# 3. Khởi động
+./scripts/start.sh
+
+# 4. Setup GitHub Copilot (optional)
+./scripts/setup-copilot.sh
+
+# 5. Truy cập VSCode
+# http://localhost:8080
+```
+
 ## 📋 Yêu cầu hệ thống
 
 - Ubuntu 18.04+ (hoặc bất kỳ Linux distro nào hỗ trợ Docker)
 - Docker và Docker Compose đã được cài đặt
 - Port 8080 available (có thể thay đổi)
+- 4GB+ RAM (khuyến nghị cho smooth experience)
 
 ## 🚀 Hướng dẫn cài đặt
 
@@ -35,16 +57,17 @@ nano .env
 ```
 
 Thay đổi các giá trị trong file `.env`:
-```
+```env
 PASSWORD=your_secure_password_here
 SUDO_PASSWORD=your_sudo_password_here
 PROXY_DOMAIN=localhost
+ENABLE_COPILOT=true  # Bật hỗ trợ GitHub Copilot
 ```
 
 ### Bước 3: Khởi động VSCode Self-Host
 
 ```bash
-# Sử dụng script tự động
+# Sử dụng script tự động (Khuyến nghị)
 ./scripts/start.sh
 
 # Hoặc khởi động thủ công
@@ -53,51 +76,113 @@ docker-compose up -d
 
 ### Bước 4: Truy cập VSCode
 
-Mở trình duyệt và truy cập: `http://localhost:8080`
+1. Mở trình duyệt và truy cập: `http://localhost:8080`
+2. Nhập password đã cấu hình trong file `.env`
+3. Chờ VSCode load hoàn tất
 
-Nhập password đã cấu hình trong file `.env`
+✅ **Hoàn tất!** Bạn đã có VSCode self-host sẵn sàng sử dụng.
 
 ## 📦 Cài đặt Extensions
 
-### Cách 1: Sử dụng script tự động
+### 🔧 Extensions cơ bản
+
+Cài đặt các extensions phổ biến:
 
 ```bash
 ./scripts/install-extensions.sh
 ```
 
-### Cách 2: Cài đặt thủ công
+Extensions được cài đặt:
+- Python
+- TypeScript/JavaScript
+- Prettier (Code formatter)
+- ESLint
+- Tailwind CSS
+- Auto Rename Tag
+- Live Server
+- Git support
+
+### 🎨 Cài đặt extensions khác
 
 1. Truy cập VSCode tại `http://localhost:8080`
-2. Mở Extensions tab (Ctrl+Shift+X)
+2. Mở Extensions tab (`Ctrl+Shift+X`)
 3. Tìm kiếm và cài đặt extension mong muốn
 
-### GitHub Copilot
+## 🤖 GitHub Copilot (AI Coding Assistant)
 
-1. Tìm kiếm "GitHub Copilot" trong Extensions
-2. Cài đặt extension
-3. Đăng nhập với tài khoản GitHub của bạn
-4. Kích hoạt Copilot subscription nếu chưa có
+> **Yêu cầu:** GitHub account với Copilot subscription active
 
-## 🛠️ Quản lý
-
-### Dừng service
+### 🚀 Setup nhanh (Khuyến nghị)
 
 ```bash
+./scripts/setup-copilot.sh
+```
+
+Script này sẽ tự động:
+- ✅ Cài đặt GitHub Copilot và Copilot Chat extensions
+- ✅ Cấu hình settings tối ưu cho AI coding
+- ✅ Restart container với cấu hình mới
+- ✅ Hiển thị hướng dẫn authentication chi tiết
+
+### 🔐 Authentication
+
+1. **Truy cập VSCode:** `http://localhost:8080`
+2. **Tìm Copilot icon** ở status bar (góc dưới phải)
+3. **Click "Sign in to GitHub"** và làm theo hướng dẫn
+4. **Hoặc dùng Command Palette:** `Ctrl+Shift+P` → `GitHub Copilot: Sign In`
+
+### 🎯 Cách sử dụng
+
+- **Inline suggestions:** Gõ code, Copilot sẽ suggest → Nhấn `Tab` để accept
+- **Chat với AI:** `Ctrl+Shift+I` để mở chat panel
+- **Inline chat:** `Ctrl+I` để chat ngay trong editor
+- **Toggle suggestions:** `Alt+\` để bật/tắt suggestions
+
+📖 **Hướng dẫn chi tiết:** [GitHub Copilot Guide](docs/github-copilot-guide.md)
+
+## 🛠️ Quản lý và Sử dụng
+
+### 🔄 Quản lý service
+
+```bash
+# Khởi động
+./scripts/start.sh
+
+# Dừng service
 ./scripts/stop.sh
-# hoặc
-docker-compose down
-```
 
-### Xem logs
-
-```bash
-docker-compose logs -f
-```
-
-### Restart service
-
-```bash
+# Restart service
 docker-compose restart
+
+# Xem logs
+docker-compose logs -f
+
+# Kiểm tra trạng thái
+docker-compose ps
+```
+
+### 💡 Tips sử dụng
+
+1. **Workspace:** Tất cả files trong thư mục `data/` sẽ được persist
+2. **Extensions:** Được lưu trong thư mục `extensions/`
+3. **Settings:** Cấu hình VSCode được lưu trong `config/`
+4. **Docker access:** Có thể build và run containers từ trong VSCode
+5. **Terminal:** Sử dụng integrated terminal như VSCode desktop
+
+### 🔧 Customization
+
+**Thay đổi port:**
+```yaml
+# docker-compose.yml
+ports:
+  - "9000:8080"  # Thay đổi từ 8080 sang 9000
+```
+
+**Mount project folder:**
+```yaml
+# docker-compose.yml
+volumes:
+  - ./your-project:/home/coder/workspace/your-project
 ```
 
 ## 📁 Cấu trúc thư mục
@@ -108,56 +193,87 @@ docker-compose restart
 ├── config/                # VSCode configuration files
 ├── data/                  # Workspace data
 ├── extensions/            # Installed extensions
+├── docs/
+│   └── github-copilot-guide.md  # GitHub Copilot detailed guide
 └── scripts/
     ├── start.sh          # Start script
     ├── stop.sh           # Stop script
-    └── install-extensions.sh  # Extensions installer
+    ├── install-extensions.sh  # Extensions installer
+    ├── install-copilot.sh     # GitHub Copilot installer
+    └── setup-copilot.sh       # Complete Copilot setup
 ```
 
-## 🔧 Tùy chỉnh
 
-### Thay đổi port
-
-Chỉnh sửa file `docker-compose.yml`:
-```yaml
-ports:
-  - "9000:8080"  # Thay đổi port từ 8080 sang 9000
-```
-
-### Thêm volume mount
-
-```yaml
-volumes:
-  - ./your-project:/home/coder/workspace/your-project
-```
 
 ## 🐛 Troubleshooting
 
-### Container không khởi động được
+### ❌ Container không khởi động
 
 ```bash
-# Kiểm tra logs
+# Kiểm tra logs chi tiết
 docker-compose logs
 
-# Kiểm tra permissions
+# Fix permissions
 sudo chown -R 1000:1000 config data extensions
+
+# Restart clean
+docker-compose down && docker-compose up -d
 ```
 
-### Không thể truy cập qua browser
+### 🌐 Không truy cập được VSCode
 
-1. Kiểm tra container có đang chạy không: `docker-compose ps`
-2. Kiểm tra port có bị conflict không: `netstat -tulpn | grep 8080`
-3. Kiểm tra firewall settings
+1. **Kiểm tra container:** `docker-compose ps`
+2. **Kiểm tra port conflict:** `netstat -tulpn | grep 8080`
+3. **Kiểm tra firewall:** Đảm bảo port 8080 không bị block
+4. **Thử port khác:** Sửa `docker-compose.yml` → `"9000:8080"`
 
-### Extensions không cài được
+### 📦 Extensions không cài được
 
-1. Đảm bảo container đang chạy
-2. Thử cài đặt thủ công qua VSCode interface
-3. Kiểm tra network connection
+1. **Container running?** `docker-compose ps`
+2. **Network OK?** Kiểm tra internet connection
+3. **Manual install:** Qua VSCode Extensions tab
+4. **Restart:** `docker-compose restart`
 
-## 📝 Ghi chú
+### 🤖 GitHub Copilot issues
 
-- Data và configuration được persist trong các thư mục `config/`, `data/`, và `extensions/`
-- Container chạy với user ID 1000 để tránh permission issues
-- Hỗ trợ đầy đủ Microsoft marketplace
-- Có thể truy cập Docker socket để build và run containers từ trong VSCode
+| Vấn đề | Giải pháp |
+|--------|-----------|
+| Không authenticate được | 1. Kiểm tra subscription: https://github.com/settings/copilot<br>2. Clear browser cache<br>3. Thử incognito mode |
+| Không có suggestions | 1. `./scripts/setup-copilot.sh`<br>2. Restart container<br>3. Check settings: `github.copilot.enable` |
+| Extension không load | 1. Reinstall: `./scripts/setup-copilot.sh`<br>2. Check logs: `docker-compose logs`<br>3. Fix permissions |
+
+📖 **Chi tiết:** [GitHub Copilot Troubleshooting Guide](docs/github-copilot-guide.md#troubleshooting)
+
+## 📝 Ghi chú quan trọng
+
+### 💾 Data Persistence
+- **Workspace:** `data/` - Tất cả projects và files
+- **Extensions:** `extensions/` - Installed extensions
+- **Settings:** `config/` - VSCode configuration
+- **Backup:** Backup các thư mục này để preserve setup
+
+### 🔒 Security & Permissions
+- Container chạy với user ID 1000 (non-root)
+- Password authentication required
+- Chỉ bind localhost (không expose ra internet)
+- Docker socket access cho container builds
+
+### 🌟 Features
+- ✅ Full Microsoft marketplace support
+- ✅ GitHub Copilot integration
+- ✅ Docker-in-Docker support
+- ✅ Integrated terminal
+- ✅ Git integration
+- ✅ Extensions persistence
+- ✅ Settings sync ready
+
+### 🚀 Performance Tips
+- Allocate đủ RAM cho Docker (ít nhất 4GB)
+- SSD storage cho better performance
+- Stable internet cho Copilot và extensions
+
+---
+
+**🎉 Enjoy coding với VSCode self-host + GitHub Copilot!**
+
+Có vấn đề? Tạo issue hoặc xem [troubleshooting guide](docs/github-copilot-guide.md) 📚
