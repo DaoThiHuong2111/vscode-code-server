@@ -17,18 +17,18 @@ git clone <repository-url>
 cd vscode-selfhost-code-server
 cp .env.example .env
 
-# 2. Chỉnh sửa password trong .env
+# 2. Chỉnh sửa .env (set passwords + enable Copilot)
 nano .env
+# Set: ENABLE_COPILOT=true để tự động setup GitHub Copilot
 
-# 3. Khởi động
+# 3. Khởi động (tự động setup Copilot nếu enabled)
 ./scripts/start.sh
 
-# 4. Setup GitHub Copilot (optional)
-./scripts/setup-copilot.sh
-
-# 5. Truy cập VSCode
+# 4. Truy cập VSCode
 # http://localhost:8080
 ```
+
+> 💡 **Tip:** Với `ENABLE_COPILOT=true`, GitHub Copilot sẽ được tự động setup khi start!
 
 ## 📋 Yêu cầu hệ thống
 
@@ -69,6 +69,7 @@ ENABLE_COPILOT=true  # Bật hỗ trợ GitHub Copilot
 ```bash
 # Sử dụng script tự động (Khuyến nghị)
 ./scripts/start.sh
+# ✨ Tự động setup GitHub Copilot nếu ENABLE_COPILOT=true
 
 # Hoặc khởi động thủ công
 docker-compose up -d
@@ -112,13 +113,23 @@ Extensions được cài đặt:
 
 > **Yêu cầu:** GitHub account với Copilot subscription active
 
-### 🚀 Setup nhanh (Khuyến nghị)
+### 🚀 Auto Setup (Khuyến nghị)
 
+**Cách 1: Tự động khi start (Mới!)**
+```bash
+# Set trong .env
+ENABLE_COPILOT=true
+
+# Chạy start script - Copilot sẽ tự động được setup
+./scripts/start.sh
+```
+
+**Cách 2: Manual setup**
 ```bash
 ./scripts/setup-copilot.sh
 ```
 
-Script này sẽ tự động:
+Script sẽ tự động:
 - ✅ Cài đặt GitHub Copilot và Copilot Chat extensions
 - ✅ Cấu hình settings tối ưu cho AI coding
 - ✅ Restart container với cấu hình mới
